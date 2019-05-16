@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <meta name="description" content="SSB Mirror" />
+    <title>SSB Mirror</title>
+    <style>
+      html {
+        background-color: #f8f9fa;
+      }
+      body {
+        color: #212529;
+        font-family: 'Helvetica Neue', 'Calibri Light', Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        letter-spacing: 0.02em;
+        padding-top: 30px;
+      }
+      a {
+        color: #4c6ef5;
+      }
+      footer {
+        text-align: center;
+        color: #627180;
+      }
+
+      svg {
+        text-align: center;
+      }
+      p {
+        margin: 0 0 12px;
+        line-height: 1.5em;
+      }
+
+      .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      .idcode {
+        color: #627180;
+        font-size: 17px;
+        word-break: break-all;
+        overflow-x: hidden;
+        width: 280px;
+        max-width: 70vw;
+        display: inline-block;
+      }
+
+      .or {
+        display: block;
+        width: 100px;
+        height: 200px;
+        text-align: center;
+        margin: 0;
+        line-height: calc(200px - 0.5em);
+        color: #627180;
+        font-family: monospace;
+        font-size: 22px;
+      }
+
+      .avatar {
+        width: 280px;
+        height: 280px;
+        max-width: 70vw;
+        max-height: 70vw;
+        margin-right: 30px;
+        background-color: aliceblue;
+        border-radius: 3px;
+      }
+
+      #invitecode {
+        width: 200px;
+        height: 200px;
+        box-sizing: border-box;
+        padding: 2px 3px;
+        background-color: #e9ecef;
+        border-radius: 3px;
+        color: #627180;
+        font-size: 17px;
+        font-weight: bold;
+        word-break: break-all;
+        display: inline-block;
+      }
+
+      section {
+        background-color: white;
+        border: 1px solid #e9e9e9;
+        padding: 20px 30px;
+        border-radius: 4px;
+        margin: 0 40px 40px;
+      }
+
+      @media (max-width: 959px) {
+        section {
+          margin: 0 0 40px;
+          padding: 20px;
+        }
+        .row {
+          flex-direction: column;
+        }
+        .avatar {
+          margin-right: 0;
+        }
+        .or {
+          width: 200px;
+          height: 60px;
+          line-height: 64px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="row">
+      <div>
+        <% if (image) { %>
+        <img src="/avatar" class="avatar" />
+        <% } else { %>
+        <div class="avatar"></div>
+        <% } %>
+
+        <h1><%= name || '' %></h1>
+        <code class="idcode"><%= id %></code>
+      </div>
+      <div>
+        <h2>👋 Hi, this is my SSB mirror server</h2>
+        <p>
+          This server keeps a copy of my
+          <a href="https://scuttlebutt.nz">SSB</a> feed, synced frequently, and
+          allows you to fetch it too. You can find the invite code below.
+        </p>
+        <p>
+          Note that syncing with my mirror means you get my data, but I won't
+          get yours, so it is unlikely I will see your comments and likes on my
+          posts. For reciprocal communication, we would have to sync with the
+          same
+          <a href="https://www.scuttlebutt.nz/concepts/pub">Pub server</a>, or I
+          would have to sync with your mirror server. Learn how to
+          <a href="https://github.com/staltz/ssb-mirror"
+            >setup your own mirror here</a
+          >.
+        </p>
+        <h3>Invite</h3>
+        <p>
+          Copy-paste this into <a href="https://manyver.se">Manyverse</a>,
+          <a href="https://github.com/ssbc/patchwork/">Patchwork</a>,
+          <a href="https://github.com/ssbc/patchbay">Patchbay</a>, and others,
+          as if it were a Pub invite. After that, your app will download my data
+          from this server.
+        </p>
+        <div class="row" style="margin-top: 20px">
+          <code id="invitecode"><%= invite %></code>
+          <div class="or">OR</div>
+          <svg
+            class="qr-code"
+            width="200px"
+            height="200px"
+            viewBox="0 0 <%= qrSize %> <%= qrSize %>"
+            xmlns="http://www.w3.org/2000/svg"
+            version="1.1"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
+            <path d="<%= qrPath %>" />
+          </svg>
+        </div>
+      </div>
+    </section>
+    <footer>
+      This web application is
+      <a href="https://github.com/staltz/ssb-mirror">open source software</a>
+      distributed under the
+      <a href="https://opensource.org/licenses/AGPL-3.0">AGPL-3.0</a> license.
+    </footer>
+
+    <script>
+      var prev = '' + invitecode.innerText;
+      var next = prev.replace(
+        '<%= host %>',
+        window.location.host.split(':')[0],
+      );
+      invitecode.innerText = next;
+    </script>
+  </body>
+</html>

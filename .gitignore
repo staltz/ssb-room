@@ -1,0 +1,13 @@
+# Node build artifacts
+node_modules
+npm-debug.log
+package-lock.json
+pnpm-lock.yaml
+
+# Local development
+*.env
+*.dev
+.DS_Store
+
+# Docker
+docker-compose.yml

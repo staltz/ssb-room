@@ -1,0 +1,10 @@
+name: ssb-spot
+image: debian-9-x64
+min_size: 1gb
+config:
+  #cloud-config
+  packages:
+    - wget
+  runcmd:
+    - wget https://raw.githubusercontent.com/staltz/ssb-spot/master/install.sh
+    - bash install.sh
