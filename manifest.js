@@ -50,6 +50,13 @@ module.exports = {
   block: {
     isBlocked: 'sync',
   },
+  tunnel: {
+    announce: 'sync',
+    leave: 'sync',
+    connect: 'duplex',
+    endpoints: 'source',
+    ping: 'sync',
+  },
 
   // Third-party
   blobs: {

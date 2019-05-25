@@ -16,45 +16,45 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 #
-# install ssb-spot image
+# install ssb-room image
 #
-docker pull staltz/ssb-spot
+docker pull staltz/ssb-room
 
 #
-# create spot container
+# create room container
 #
-mkdir ~/ssb-spot-data
-chown -R 1000:1000 ~/ssb-spot-data
+mkdir ~/ssb-room-data
+chown -R 1000:1000 ~/ssb-room-data
 
 #
 # Redirect internal 8007 to external 80
 #
 sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8007
 
-# create ./create-spot script
-cat > ./create-spot <<EOF
+# create ./create-room script
+cat > ./create-room <<EOF
 #!/bin/bash
 memory_limit=$(($(free -b --si | awk '/Mem\:/ { print $2 }') - 200*(10**6)))
-docker run -d --name spot \
-   -v ~/ssb-spot-data/:/home/node/.ssb/ \
+docker run -d --name room \
+   -v ~/ssb-room-data/:/home/node/.ssb/ \
    --network host \
    --restart unless-stopped \
    --memory "\$memory_limit" \
-   staltz/ssb-spot
+   staltz/ssb-room
 EOF
 # make the script executable
-chmod +x ./create-spot
+chmod +x ./create-room
 # run the script
-./create-spot
+./create-room
 
-# create ./spot script
-cat > ./spot <<EOF
+# create ./room script
+cat > ./room <<EOF
 #!/bin/sh
-docker exec -it spot spot "\$@"
+docker exec -it room room "\$@"
 EOF
 
 # make the script executable
-chmod +x ./spot
+chmod +x ./room
 
 #
 # setup auto-healer
@@ -66,5 +66,5 @@ docker run -d --name healer \
   ahdinosaur/healer
 
 # ensure containers are always running
-printf '#!/bin/sh\n\ndocker start spot\n' | tee /etc/cron.hourly/spot && chmod +x /etc/cron.hourly/spot
+printf '#!/bin/sh\n\ndocker start room\n' | tee /etc/cron.hourly/room && chmod +x /etc/cron.hourly/room
 printf '#!/bin/sh\n\ndocker start healer\n' | tee /etc/cron.hourly/healer && chmod +x /etc/cron.hourly/healer

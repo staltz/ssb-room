@@ -1,13 +1,11 @@
 function startSSB() {
   return require('ssb-server/index')
-    .use(require('ssb-server/plugins/master'))
-    .use(require('ssb-server/plugins/logging'))
+    .use(require('ssb-master'))
+    .use(require('ssb-logging'))
     .use(require('ssb-legacy-conn'))
     .use(require('ssb-replicate'))
-    .use(require('ssb-blobs'))
-    .use(require('./mirror-invite'))
-    .use(require('ssb-backlinks')) // required by ssb-about
-    .use(require('ssb-about'))
+    .use(require('./invite'))
+    .use(require('./tunnel'))
     .call(null, require('./config'));
 }
 

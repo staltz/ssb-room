@@ -11,10 +11,7 @@ const config = Config('ssb', {
   },
   connections: {
     incoming: {
-      net: [
-        {scope: 'public', transform: 'shs', port: 8008},
-        {scope: 'device', transform: 'shs', port: 8008, host: 'localhost'},
-      ],
+      net: [{scope: 'public', transform: 'shs', port: 8008, host: '0.0.0.0'}],
     },
     outgoing: {
       net: [{transform: 'shs'}],

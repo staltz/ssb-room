@@ -1,4 +1,4 @@
-name: ssb-spot
+name: ssb-room
 image: debian-9-x64
 min_size: 1gb
 config:
@@ -6,5 +6,5 @@ config:
   packages:
     - wget
   runcmd:
-    - wget https://raw.githubusercontent.com/staltz/ssb-spot/master/install.sh
+    - wget https://raw.githubusercontent.com/staltz/ssb-room/master/install.sh
     - bash install.sh

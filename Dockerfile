@@ -12,14 +12,14 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV DEBUG="*"
 
 USER node
-RUN npm install -g ssb-spot@0.0.1
+RUN npm install -g ssb-room@0.0.1
 
 EXPOSE 8008
 EXPOSE 8007
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=10 \
-  CMD ssb-spot check || exit 1
+  CMD ssb-room check || exit 1
 ENV HEALING_ACTION RESTART
 
-ENTRYPOINT [ "/tini", "--", "ssb-spot" ]
+ENTRYPOINT [ "/tini", "--", "ssb-room" ]
 CMD [ "start" ]

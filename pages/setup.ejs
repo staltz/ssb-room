@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     />
-    <meta name="description" content="SSB Mirror" />
-    <title>SSB Mirror</title>
+    <meta name="description" content="SSB Room - setup" />
+    <title>SSB Room – setup</title>
     <style>
       html {
         background-color: #f8f9fa;
@@ -27,6 +27,12 @@
         text-align: center;
         color: #627180;
       }
+      section,
+      footer {
+        box-sizing: border-box;
+        max-width: 800px;
+        margin: 0 auto;
+      }
 
       svg {
         text-align: center;
@@ -36,66 +42,39 @@
         line-height: 1.5em;
       }
 
-      .row {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-
-      .avatar {
-        width: 280px;
-        height: 280px;
-        max-width: 70vw;
-        max-height: 70vw;
-        margin-right: 30px;
-        background-color: aliceblue;
-        border-radius: 3px;
-      }
-
-      .or {
-        display: block;
-        width: 100px;
-        height: 200px;
-        text-align: center;
-        margin: 0;
-        line-height: calc(200px - 0.5em);
-        color: #627180;
-        font-family: monospace;
-        font-size: 22px;
-      }
-
-      #invitecode {
-        width: 200px;
-        height: 200px;
-        box-sizing: border-box;
-        padding: 2px 3px;
-        background-color: #e9ecef;
-        border-radius: 3px;
-        color: #627180;
-        font-size: 17px;
-        font-weight: bold;
-        word-break: break-all;
-        display: inline-block;
-      }
-
       section {
         background-color: white;
         border: 1px solid #e9e9e9;
         padding: 20px 30px;
         border-radius: 4px;
-        margin: 0 40px 40px;
+        margin: 0 auto 40px;
       }
 
-      @media (max-width: 959px) {
+      .form {
+        display: flex;
+        flex-direction: column;
+      }
+      .form * {
+        margin-bottom: 10px;
+      }
+      .shortinput {
+        max-width: 150px;
+      }
+      .submit {
+        max-width: 70px;
+      }
+
+      @media (max-width: 805px) {
+        body {
+          margin: 0;
+          padding-top: 0;
+        }
         section {
-          margin: 0 0 40px;
           padding: 20px;
-        }
-        .row {
-          flex-direction: column;
-        }
-        .avatar {
-          margin-right: 0;
+          border-radius: 0;
+          border-left-width: 0;
+          border-right-width: 0;
+          border-top-width: 0;
         }
         .or {
           width: 200px;
@@ -106,58 +85,50 @@
     </style>
   </head>
   <body>
-    <section class="row">
+    <section>
       <div>
-        <div class="avatar"></div>
-      </div>
-      <div>
-        <h2>👀 Empty mirror</h2>
+        <h2>✨ New room!</h2>
         <p>
-          Your SSB mirror is correctly installed, congratulations!
+          Your SSB room is correctly installed, congratulations!
         </p>
         <p>
-          However, it is not yet mirroring your data. To make this server follow
-          and mirror you, use the invite code below.
+          Now, choose a name and a description for this room so that visitors
+          know what the room's community is about.
         </p>
-        <h3>Invite</h3>
-        <p>
-          Copy-paste this into <a href="https://manyver.se">Manyverse</a>,
-          <a href="https://github.com/ssbc/patchwork/">Patchwork</a>,
-          <a href="https://github.com/ssbc/patchbay">Patchbay</a>, and others,
-          as if it were a Pub invite. After that, this server will fetch your
-          data from your app.
-        </p>
-        <div class="row" style="margin-top: 20px">
-          <code id="invitecode"><%= invite %></code>
-          <div class="or">OR</div>
-          <svg
-            class="qr-code"
-            width="200px"
-            height="200px"
-            viewBox="0 0 <%= qrSize %> <%= qrSize %>"
-            xmlns="http://www.w3.org/2000/svg"
-            version="1.1"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-          >
-            <path d="<%= qrPath %>" />
-          </svg>
-        </div>
+        <form
+          action="/setup"
+          method="get"
+          enctype="application/x-www-form-urlencoded"
+          class="form"
+        >
+          <input
+            type="text"
+            name="name"
+            autofocus="true"
+            required="true"
+            class="shortinput"
+            aria-placeholder="A user-friendly name for this room server"
+            placeholder="Title"
+            width="20"
+          />
+          <input
+            type="text"
+            name="description"
+            autofocus="true"
+            class="longinput"
+            aria-placeholder="An optional description of this room server"
+            placeholder="(Optional) describe this room"
+            width="100"
+          />
+          <input class="submit" value="Done" type="submit" />
+        </form>
       </div>
     </section>
     <footer>
       This web application is
-      <a href="https://github.com/staltz/ssb-mirror">open source software</a>
+      <a href="https://github.com/staltz/ssb-room">open source software</a>
       distributed under the
       <a href="https://opensource.org/licenses/AGPL-3.0">AGPL-3.0</a> license.
     </footer>
-
-    <script>
-      var prev = '' + invitecode.innerText;
-      var next = prev.replace(
-        '<%= host %>',
-        window.location.host.split(':')[0],
-      );
-      invitecode.innerText = next;
-    </script>
   </body>
 </html>

@@ -2,7 +2,7 @@
 
 ### Install Docker
 
-To run a pub you need to have a static public IP, ideally with a DNS record (i.e.`<hostname.yourdomain.tld>`).
+To run an SSB room you need to have a static public IP, ideally with a DNS record (i.e.`<hostname.yourdomain.tld>`).
 
 On a fresh Debian 9 box, as root, run:
 
@@ -19,12 +19,12 @@ systemctl start docker
 systemctl enable docker
 ```
 
-### Install the `ssb-spot` image
+### Install the `ssb-room` image
 
 #### (Option A) Pull the image from docker hub
 
 ```shell
-docker pull staltz/ssb-spot
+docker pull staltz/ssb-room
 ```
 
 #### (Option B) Build the image from source
@@ -32,21 +32,21 @@ docker pull staltz/ssb-spot
 From GitHub:
 
 ```shell
-git clone https://github.com/staltz/ssb-spot.git
-cd ssb-spot
-docker build -t staltz/ssb-spot .
+git clone https://github.com/staltz/ssb-room.git
+cd ssb-room
+docker build -t staltz/ssb-room .
 ```
 
-### Create a container called `spot`
+### Create a container called `room`
 
-#### Step 1. Create a directory on the Docker host for persisting the spot's data
+#### Step 1. Create a directory on the Docker host for persisting the room's data
 
 ```shell
-mkdir ~/ssb-spot-data
-chown -R 1000:1000 ~/ssb-spot-data
+mkdir ~/ssb-room-data
+chown -R 1000:1000 ~/ssb-room-data
 ```
 
-(If migrating from an old server, copy the previous `ssb-spot-data` and paste it in the new one)
+(If migrating from an old server, copy the previous `ssb-room-data` and paste it in the new one)
 
 #### Step 2. Configure the firewall to redirect the HTTP port
 
@@ -56,18 +56,18 @@ sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-po
 
 #### Step 3. Run the container
 
-Create a `./create-spot` script:
+Create a `./create-room` script:
 
 ```shell
-cat > ./create-spot <<EOF
+cat > ./create-room <<EOF
 #!/bin/bash
 memory_limit=$(($(free -b --si | awk '/Mem\:/ { print $2 }') - 200*(10**6)))
-docker run -d --name spot \
-   -v ~/ssb-spot-data/:/home/node/.ssb/ \
+docker run -d --name room \
+   -v ~/ssb-room-data/:/home/node/.ssb/ \
    --network host \
    --restart unless-stopped \
    --memory "\$memory_limit" \
-   staltz/ssb-spot
+   staltz/ssb-room
 EOF
 ```
 
@@ -76,33 +76,33 @@ where `--memory` sets an upper memory limit of your total memory minus 200 MB (f
 Then make the script executable and run it:
 
 ```shell
-chmod +x ./create-spot
-./create-spot
+chmod +x ./create-room
+./create-room
 ```
 
-#### Step 4. Create the `./spot` script
+#### Step 4. Create the `./room` script
 
-The shell script in `./spot` will help us command our Scuttlebutt spot server:
+The shell script in `./room` will help us command our SSB Room server:
 
 ```shell
-cat > ./spot <<EOF
+cat > ./room <<EOF
 #!/bin/sh
-docker exec -it spot ssb-spot \$@
+docker exec -it room ssb-room \$@
 EOF
 ```
 
 Then make it executable and run it:
 
 ```shell
-chmod +x ./spot
-./spot check
+chmod +x ./room
+./room check
 ```
 
 ### Setup an auto-healer container
 
-SSB spot has a built-in health check: `ssb-spot check`.
+SSB room has a built-in health check: `ssb-room check`.
 
-When `spot` becomes unhealthy (it will!), we want to kill the container, so it will be automatically restarted by Docker.
+When `room` becomes unhealthy, we want to kill the container, so it will be automatically restarted by Docker.
 
 For this situation, we will use [ahdinosaur/healer](https://github.com/ahdinosaur/healer):
 
@@ -119,12 +119,12 @@ docker run -d --name healer \
 
 ### Ensure containers are always running
 
-Sometimes the `spot` or `healer` containers will stop running (despite `--restart unless-stopped`!).
+Sometimes the `room` or `healer` containers will stop running (despite `--restart unless-stopped`!).
 
 For this situation, we will setup two cron job scripts:
 
 ```shell
-printf '#!/bin/sh\n\ndocker start spot\n' | tee /etc/cron.hourly/spot && chmod +x /etc/cron.hourly/spot
+printf '#!/bin/sh\n\ndocker start room\n' | tee /etc/cron.hourly/room && chmod +x /etc/cron.hourly/room
 printf '#!/bin/sh\n\ndocker start healer\n' | tee /etc/cron.hourly/healer && chmod +x /etc/cron.hourly/healer
 ```
 

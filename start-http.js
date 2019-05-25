@@ -1,13 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
-const mime = require('mime-types');
-const pull = require('pull-stream');
-const toPull = require('stream-to-pull-stream');
-const ident = require('pull-identify-filetype');
 const qr = require('qr-image');
 const ref = require('ssb-ref');
-const debug = require('debug')('ssb:mirror:http');
+const pull = require('pull-stream');
+const debug = require('debug')('ssb:room:http');
 
 module.exports = function startHTTP(ssbServer) {
   const app = express();
@@ -17,90 +14,53 @@ module.exports = function startHTTP(ssbServer) {
   app.set('views', __dirname + '/pages');
   app.set('view engine', 'ejs');
 
-  const feedFilePath = path.join(ssbServer.config.path, 'mirror');
+  const roomCfgFilePath = path.join(ssbServer.config.path, 'roomcfg');
 
   app.get('/', (_req, res) => {
     const invite = ssbServer.invite.get();
     const host = ref.parseAddress(ref.parseMultiServerInvite(invite).remote)
       .host;
     const qrCode = qr.svgObject(invite);
-    fs.access(feedFilePath, fs.constants.F_OK, doesNotExist => {
+
+    fs.access(roomCfgFilePath, fs.constants.F_OK, doesNotExist => {
       if (doesNotExist) {
-        debug('There is no mirror file, ask for setup');
-        res.render('setup', {
-          host: host,
-          invite: invite,
-          qrSize: qrCode.size,
-          qrPath: qrCode.path,
-        });
+        debug('There is no roomname file, ask for setup');
+        res.render('setup');
       } else {
-        debug('There is a mirror file');
-        fs.readFile(feedFilePath, {encoding: 'utf-8'}, (err1, feed) => {
-          if (err1) {
-            debug('ERROR loading mirror file');
-            feed = ssbServer.id;
-          }
-          debug('The target feed: ' + feed);
-          ssbServer.about.socialValue(
-            {key: 'name', dest: feed},
-            (err2, name) => {
-              debug('socialValue name: ' + name);
-              if (err2) name = null;
-              ssbServer.about.socialValue(
-                {key: 'image', dest: feed},
-                (err3, val) => {
-                  debug('socialValue image: ' + val);
-                  let image = val;
-                  if (err3) image = null;
-                  if (!!val && typeof val === 'object' && val.link)
-                    image = val.link;
+        debug('There is a roomcfg file');
+        fs.readFile(roomCfgFilePath, {encoding: 'utf-8'}, (err1, rawCfg) => {
+          if (err1) debug('ERROR loading roomcfg file');
+          const roomConfig = JSON.parse(rawCfg);
 
-                  debug('blobs has this image? ' + image);
-                  ssbServer.blobs.has(image, (err3, has) => {
-                    debug('has=' + has);
-                    if (err3 || !has) image = null;
-
-                    res.render('index', {
-                      host: host,
-                      id: feed,
-                      name: name,
-                      image: image,
-                      invite: invite,
-                      qrSize: qrCode.size,
-                      qrPath: qrCode.path,
-                    });
-                  });
-                },
-              );
-            },
+          pull(
+            ssbServer.tunnel.endpoints(),
+            pull.take(1),
+            pull.drain(endpoints => {
+              res.render('index', {
+                host: host,
+                name: roomConfig.name,
+                description: roomConfig.description,
+                onlineCount: (endpoints || {length: 0}).length,
+                invite: invite,
+                qrSize: qrCode.size,
+                qrPath: qrCode.path,
+              });
+            }),
           );
         });
       }
     });
   });
 
-  app.get('/avatar', (req, res) => {
-    fs.readFile(feedFilePath, {encoding: 'utf-8'}, (err1, feed) => {
-      if (err1) feed = ssbServer.id;
-      ssbServer.about.socialValue({key: 'image', dest: feed}, (err, val) => {
-        debug('socialValue image: ' + val);
-        if (err) {
-          res.writeHead(404);
-          res.end('File not found');
-          return;
-        }
-        let image = val;
-        if (!!val && typeof val === 'object' && val.link) image = val.link;
-
-        pull(
-          ssbServer.blobs.get(image),
-          ident(type => {
-            if (type) res.writeHead(200, {'Content-Type': mime.lookup(type)});
-          }),
-          toPull.sink(res),
-        );
+  app.get('/setup', (req, res) => {
+    if (req.query.name) {
+      fs.writeFileSync(roomCfgFilePath, JSON.stringify(req.query), {
+        encoding: 'utf-8',
       });
-    });
+      res.redirect('/');
+    } else {
+      res.render('setup');
+    }
   });
 
   return app.listen(app.get('port'), () => {
