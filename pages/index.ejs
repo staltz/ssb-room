@@ -135,7 +135,7 @@
         </p>
         <h2>Join</h2>
         <p>
-          <h4>👥 <%= onlineCount %> account<%= onlineCount === 1 ? '' : 's' %> currently online</h4>
+          <h4 <%= onlineCount >= 1 ? 'style="color:#0ca678"' : '' %>>👥 <%= onlineCount %> account<%= onlineCount === 1 ? '' : 's' %> currently online</h4>
           Copy-paste the invite code below into
           <a href="https://manyver.se">Manyverse</a>,
           <a href="https://github.com/ssbc/patchwork/">Patchwork</a>,
