@@ -1,5 +1,6 @@
 const cat = require('pull-cat');
 const Notify = require('pull-notify');
+const pull = require('pull-stream');
 const debug = require('debug')('ssb:room:tunnel');
 
 function ErrorDuplex(message) {
@@ -60,7 +61,8 @@ exports.init = function(sbot, _config) {
     },
 
     endpoints: function() {
-      return cat([serializeEndpoints(), endpointsStream]);
+      const initial = pull.values([serializeEndpoints()]);
+      return cat([initial, endpointsStream]);
     },
 
     connect: function(opts) {
