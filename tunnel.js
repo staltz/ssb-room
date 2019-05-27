@@ -35,7 +35,7 @@ exports.init = function(sbot, _config) {
   }
 
   const endpoints = {};
-  const endpointsStream = Notify();
+  const notifyEndpoints = Notify();
   const NAME = '_ssbRoomTunnelName';
 
   function serializeEndpoints() {
@@ -51,18 +51,18 @@ exports.init = function(sbot, _config) {
       debug('received endpoint announcement from: %s', this.id);
       endpoints[this.id] = sbot.peers[this.id][0];
       if (opts && opts.name) endpoints[this.id][NAME] = opts.name;
-      endpointsStream.notify(serializeEndpoints());
+      notifyEndpoints(serializeEndpoints());
     },
 
     leave: function() {
       debug('endpoint is leaving: %s', this.id);
       endpoints[this.id] = null;
-      endpointsStream.notify(serializeEndpoints());
+      notifyEndpoints(serializeEndpoints());
     },
 
     endpoints: function() {
       const initial = pull.values([serializeEndpoints()]);
-      return cat([initial, endpointsStream]);
+      return cat([initial, notifyEndpoints.listen()]);
     },
 
     connect: function(opts) {
