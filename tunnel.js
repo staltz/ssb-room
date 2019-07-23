@@ -6,7 +6,7 @@ const debug = require('debug')('ssb:room:tunnel');
 function ErrorDuplex(message) {
   var err = new Error(message);
   return {
-    source: function(abort, cb) {
+    source: function(_abort, cb) {
       cb(err);
     },
     sink: function(read) {
@@ -39,15 +39,6 @@ exports.init = function(ssb, _config) {
 
   const endpoints = {};
   const notifyEndpoints = Notify();
-  const NAME = '_ssbRoomTunnelName';
-
-  function serializeEndpoints() {
-    return Object.keys(endpoints).map(id => {
-      const out = {id, address: `tunnel:${ssb.id}:${id}`};
-      if (endpoints[id][NAME]) out.name = endpoints[id][NAME];
-      return out;
-    });
-  }
 
   pull(
     ssb.conn.internalConnHub().listen(),
@@ -58,28 +49,27 @@ exports.init = function(ssb, _config) {
     pull.drain(({key}) => {
       debug('endpoint is no longer here: %s', key);
       endpoints[key] = null;
-      notifyEndpoints(serializeEndpoints());
+      notifyEndpoints(Object.keys(endpoints));
     }),
   );
 
   return {
-    announce: function(opts) {
+    announce: function() {
       debug('received endpoint announcement from: %s', this.id);
       endpoints[this.id] = ssb.peers[this.id][0];
-      if (opts && opts.name) endpoints[this.id][NAME] = opts.name;
-      notifyEndpoints(serializeEndpoints());
+      notifyEndpoints(Object.keys(endpoints));
     },
 
     leave: function() {
       debug('endpoint is leaving: %s', this.id);
       endpoints[this.id] = null;
-      notifyEndpoints(serializeEndpoints());
+      notifyEndpoints(Object.keys(endpoints));
     },
 
     isRoom: () => true,
 
     endpoints: function() {
-      const initial = pull.values([serializeEndpoints()]);
+      const initial = pull.values([Object.keys(endpoints)]);
       return cat([initial, notifyEndpoints.listen()]);
     },
 
