@@ -49,6 +49,23 @@ exports.init = function(sbot, _config) {
     });
   }
 
+  pull(
+    sbot.gossip.changes(),
+    pull.filter(data => data.peer && data.peer.key),
+    pull.drain(data => {
+      const peerKey = data.peer.key;
+      if (
+        data.type === 'remove' ||
+        data.type === 'disconnect' ||
+        data.type === 'connecting-failed'
+      ) {
+        debug('endpoint is no longer here: %s', peerKey);
+        endpoints[peerKey] = null;
+        notifyEndpoints(serializeEndpoints());
+      }
+    }),
+  );
+
   return {
     announce: function(opts) {
       debug('received endpoint announcement from: %s', this.id);
