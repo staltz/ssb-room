@@ -69,6 +69,12 @@ exports.init = function(ssb, _config) {
     isRoom: () => true,
 
     endpoints: function() {
+      debug('received endpoints subscription from: %s', this.id);
+      if (!endpoints[this.id]) {
+        endpoints[this.id] = ssb.peers[this.id][0];
+        notifyEndpoints(Object.keys(endpoints));
+      }
+
       const initial = pull.values([Object.keys(endpoints)]);
       return cat([initial, notifyEndpoints.listen()]);
     },
