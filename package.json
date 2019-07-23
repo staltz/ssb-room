@@ -1,6 +1,6 @@
 {
   "name": "ssb-room",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A server to find and connect to other SSB peers – a meeting place",
   "main": "index.js",
   "bin": "bin.js",
