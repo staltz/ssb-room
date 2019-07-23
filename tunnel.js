@@ -73,7 +73,7 @@ exports.init = function(sbot, _config) {
           opts.target,
           this.id,
         );
-        return endpoints[opts.target].tunnel.connect(opts);
+        return endpoints[opts.target].tunnel.connect(opts, () => {});
       } else return ErrorDuplex('could not connect to:' + opts.target);
     },
 
