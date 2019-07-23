@@ -32,9 +32,9 @@ exports.permissions = {
   },
 };
 
-exports.init = function(sbot, _config) {
-  if (!sbot.gossip || !sbot.gossip.connect) {
-    throw new Error('tunnel plugin is missing required gossip plugin');
+exports.init = function(ssb, _config) {
+  if (!ssb.conn || !ssb.conn.connect) {
+    throw new Error('tunnel plugin is missing the required ssb-conn plugin');
   }
 
   const endpoints = {};
@@ -43,33 +43,29 @@ exports.init = function(sbot, _config) {
 
   function serializeEndpoints() {
     return Object.keys(endpoints).map(id => {
-      const out = {id, address: `tunnel:${sbot.id}:${id}`};
+      const out = {id, address: `tunnel:${ssb.id}:${id}`};
       if (endpoints[id][NAME]) out.name = endpoints[id][NAME];
       return out;
     });
   }
 
   pull(
-    sbot.gossip.changes(),
-    pull.filter(data => data.peer && data.peer.key),
-    pull.drain(data => {
-      const peerKey = data.peer.key;
-      if (
-        data.type === 'remove' ||
-        data.type === 'disconnect' ||
-        data.type === 'connecting-failed'
-      ) {
-        debug('endpoint is no longer here: %s', peerKey);
-        endpoints[peerKey] = null;
-        notifyEndpoints(serializeEndpoints());
-      }
+    ssb.conn.internalConnHub().listen(),
+    pull.filter(
+      ({type}) => type === 'connecting-failed' || type === 'disconnected',
+    ),
+    pull.filter(({key}) => !!key),
+    pull.drain(({key}) => {
+      debug('endpoint is no longer here: %s', key);
+      endpoints[key] = null;
+      notifyEndpoints(serializeEndpoints());
     }),
   );
 
   return {
     announce: function(opts) {
       debug('received endpoint announcement from: %s', this.id);
-      endpoints[this.id] = sbot.peers[this.id][0];
+      endpoints[this.id] = ssb.peers[this.id][0];
       if (opts && opts.name) endpoints[this.id][NAME] = opts.name;
       notifyEndpoints(serializeEndpoints());
     },
@@ -89,14 +85,14 @@ exports.init = function(sbot, _config) {
 
     connect: function(opts) {
       if (!opts) return ErrorDuplex('opts *must* be provided');
-      if (endpoints[opts.target]) {
-        debug(
-          'received tunnel request for target %s from %s',
-          opts.target,
-          this.id,
-        );
-        return endpoints[opts.target].tunnel.connect(opts, () => {});
-      } else return ErrorDuplex('could not connect to:' + opts.target);
+
+      const target = opts.target;
+      if (endpoints[target]) {
+        debug('received tunnel request for target %s from %s', target, this.id);
+        return endpoints[target].tunnel.connect(opts, () => {});
+      } else {
+        return ErrorDuplex('could not connect to: ' + target);
+      }
     },
 
     ping: function() {

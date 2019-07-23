@@ -22,11 +22,10 @@
     "pull-notify": "0.1.1",
     "ssb-client": "~4.7.1",
     "ssb-config": "~3.2.5",
-    "ssb-master": "~1.0.2",
+    "ssb-master": "~1.0.3",
     "ssb-logging": "~1.0.0",
-    "ssb-legacy-conn": "~1.0.25",
+    "ssb-conn": "~0.2.1",
     "ssb-ref": "~2.13.9",
-    "ssb-keys": "~7.1.6",
-    "ssb-server": "~15.0.1"
+    "ssb-server": "~15.1.0"
   }
 }
