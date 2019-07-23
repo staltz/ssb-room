@@ -26,7 +26,7 @@
     "ssb-config": "~3.2.5",
     "ssb-master": "~1.0.3",
     "ssb-logging": "~1.0.0",
-    "ssb-conn": "~0.2.1",
+    "ssb-conn": "~0.2.2",
     "ssb-ref": "~2.13.9"
   }
 }
