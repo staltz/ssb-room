@@ -20,13 +20,16 @@ exports.version = '1.0.0';
 exports.manifest = {
   announce: 'sync',
   leave: 'sync',
+  isRoom: 'sync',
   connect: 'duplex',
   endpoints: 'source',
   ping: 'sync',
 };
 
 exports.permissions = {
-  anonymous: {allow: ['connect', 'announce', 'leave', 'ping', 'endpoints']},
+  anonymous: {
+    allow: ['connect', 'announce', 'leave', 'isRoom', 'ping', 'endpoints'],
+  },
 };
 
 exports.init = function(sbot, _config) {
@@ -59,6 +62,8 @@ exports.init = function(sbot, _config) {
       endpoints[this.id] = null;
       notifyEndpoints(serializeEndpoints());
     },
+
+    isRoom: () => true,
 
     endpoints: function() {
       const initial = pull.values([serializeEndpoints()]);
