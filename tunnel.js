@@ -87,6 +87,7 @@ exports.init = function(ssb, _config) {
       const target = opts.target;
       if (endpoints[target]) {
         debug('received tunnel request for target %s from %s', target, this.id);
+        opts.origin = this.id;
         return endpoints[target].tunnel.connect(opts, () => {});
       } else {
         return ErrorDuplex('could not connect to: ' + target);
