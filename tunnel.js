@@ -45,10 +45,10 @@ exports.init = function(ssb, _config) {
     pull.filter(
       ({type}) => type === 'connecting-failed' || type === 'disconnected',
     ),
-    pull.filter(({key}) => !!key),
+    pull.filter(({key}) => !!key && !!endpoints[key]),
     pull.drain(({key}) => {
       debug('endpoint is no longer here: %s', key);
-      endpoints[key] = null;
+      delete endpoints[key];
       notifyEndpoints(Object.keys(endpoints));
     }),
   );
