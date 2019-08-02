@@ -62,7 +62,7 @@ exports.init = function(ssb, _config) {
 
     leave: function() {
       debug('endpoint is leaving: %s', this.id);
-      endpoints[this.id] = null;
+      delete endpoints[this.id];
       notifyEndpoints(Object.keys(endpoints));
     },
 
