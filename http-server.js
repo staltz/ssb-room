@@ -25,7 +25,7 @@ function startHTTPServer(ssb) {
 
   const roomCfgFilePath = path.join(ssb.config.path, 'roomcfg');
 
-  app.get('/', (_req, res) => {
+  app.get('/', (req, res) => {
     if (!fileExistsSync(roomCfgFilePath)) {
       debug('There is no roomcfg file, ask for setup');
       res.redirect('setup');
@@ -35,8 +35,13 @@ function startHTTPServer(ssb) {
     fs.readFile(roomCfgFilePath, {encoding: 'utf-8'}, (err1, rawCfg) => {
       if (err1) debug('ERROR loading roomcfg file');
       const roomConfig = JSON.parse(rawCfg);
-      const invite = ssb.invite.get();
-      const host = parseAddress(parseMultiServerInvite(invite).remote).host;
+      let invite = ssb.invite.get();
+      let host = parseAddress(parseMultiServerInvite(invite).remote).host;
+      if (req.headers && req.headers.host) {
+        const requestedHost = req.headers.host.split(':')[0];
+        invite = invite.replace(host, requestedHost);
+        host = requestedHost;
+      }
       const qrCode = qr.svgObject(invite);
 
       pull(
