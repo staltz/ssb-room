@@ -53,6 +53,10 @@ exports.init = function(ssb, _config) {
     }),
   );
 
+  setInterval(() => {
+    notifyEndpoints(Object.keys(endpoints));
+  }, 10e3);
+
   return {
     announce: function() {
       debug('received endpoint announcement from: %s', this.id);
