@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const cat = require('pull-cat');
 const Notify = require('pull-notify');
 const pull = require('pull-stream');
@@ -20,7 +22,7 @@ exports.version = '1.0.0';
 exports.manifest = {
   announce: 'sync',
   leave: 'sync',
-  isRoom: 'sync',
+  isRoom: 'async',
   connect: 'duplex',
   endpoints: 'source',
   ping: 'sync',
@@ -39,6 +41,18 @@ exports.init = function(ssb, _config) {
 
   const endpoints = {};
   const notifyEndpoints = Notify();
+  const roomCfgFilePath = path.join(ssb.config.path, 'roomcfg');
+
+  let responseFor_isRoom;
+  fs.readFile(roomCfgFilePath, {encoding: 'utf-8'}, (err, rawCfg) => {
+    if (!err && rawCfg) {
+      const roomConfig = JSON.parse(rawCfg);
+      responseFor_isRoom = {
+        name: roomConfig.name,
+        description: roomConfig.description,
+      };
+    }
+  });
 
   pull(
     ssb.conn.internalConnHub().listen(),
@@ -70,7 +84,27 @@ exports.init = function(ssb, _config) {
       notifyEndpoints(Object.keys(endpoints));
     },
 
-    isRoom: () => true,
+    isRoom: cb => {
+      if (responseFor_isRoom) {
+        cb(null, responseFor_isRoom);
+        return;
+      }
+
+      fs.readFile(roomCfgFilePath, {encoding: 'utf-8'}, (err, rawCfg) => {
+        let response;
+        if (err || !rawCfg) {
+          response = true;
+        } else {
+          const roomConfig = JSON.parse(rawCfg);
+          responseFor_isRoom = response = {
+            name: roomConfig.name,
+            description: roomConfig.description,
+          };
+        }
+
+        cb(null, response);
+      });
+    },
 
     endpoints: function() {
       if (this.id && this.id !== ssb.id) {
