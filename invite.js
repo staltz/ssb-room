@@ -1,4 +1,4 @@
-const SEED = 'SSB+Room+PSK3TLYC2T86EHQCUHBUHASCASE18JBV24=';
+const {addressToInvite} = require('./utils');
 
 module.exports = {
   name: 'invite',
@@ -16,7 +16,7 @@ module.exports = {
   init: function(server, _config) {
     return {
       get: function() {
-        return server.getAddress('public') + ':' + SEED;
+        return addressToInvite(server.getAddress('public'));
       },
       create: function(_opts, cb) {
         cb(new Error('ssb-room does not create real invites'));

@@ -69,6 +69,7 @@ module.exports = {
     leave: 'sync',
     connect: 'duplex',
     endpoints: 'source',
+    isRoom: 'async',
     ping: 'sync',
   },
 

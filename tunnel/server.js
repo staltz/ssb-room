@@ -3,38 +3,10 @@ const path = require('path');
 const cat = require('pull-cat');
 const Notify = require('pull-notify');
 const pull = require('pull-stream');
-const debug = require('debug')('ssb:room:tunnel');
+const debug = require('debug')('ssb:room:tunnel:server');
+const ErrorDuplex = require('./error-duplex');
 
-function ErrorDuplex(message) {
-  var err = new Error(message);
-  return {
-    source: function(_abort, cb) {
-      cb(err);
-    },
-    sink: function(read) {
-      read(err, function() {});
-    },
-  };
-}
-
-exports.name = 'tunnel';
-exports.version = '1.0.0';
-exports.manifest = {
-  announce: 'sync',
-  leave: 'sync',
-  isRoom: 'async',
-  connect: 'duplex',
-  endpoints: 'source',
-  ping: 'sync',
-};
-
-exports.permissions = {
-  anonymous: {
-    allow: ['connect', 'announce', 'leave', 'isRoom', 'ping', 'endpoints'],
-  },
-};
-
-exports.init = function(ssb, _config) {
+function init(ssb) {
   if (!ssb.conn || !ssb.conn.connect) {
     throw new Error('tunnel plugin is missing the required ssb-conn plugin');
   }
@@ -136,4 +108,23 @@ exports.init = function(ssb, _config) {
       return Date.now();
     },
   };
+}
+
+module.exports = {
+  name: 'tunnel',
+  version: '1.0.0',
+  manifest: {
+    announce: 'sync',
+    leave: 'sync',
+    isRoom: 'async',
+    connect: 'duplex',
+    endpoints: 'source',
+    ping: 'sync',
+  },
+  permissions: {
+    anonymous: {
+      allow: ['connect', 'announce', 'leave', 'isRoom', 'ping', 'endpoints'],
+    },
+  },
+  init,
 };
