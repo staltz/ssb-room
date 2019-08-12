@@ -78,9 +78,11 @@ function startHTTPServer(ssb) {
     }
   });
 
-  return app.listen(app.get('port'), () => {
+  app.listen(app.get('port'), () => {
     debug('Express app is running on port %s', app.get('port'));
   });
+
+  return {};
 }
 
 module.exports = {
