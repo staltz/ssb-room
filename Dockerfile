@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:10.16
 
 MAINTAINER Andre Staltz <contact@staltz.com>
 
