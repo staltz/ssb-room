@@ -5,9 +5,10 @@ const debug = require('debug')('ssb:room:tunnel:client');
 const ErrorDuplex = require('./error-duplex');
 
 class RoomClient {
-  constructor(ssb, serverKey, rpc, roomMetadata, onConnect) {
+  constructor(ssb, serverKey, address, rpc, roomMetadata, onConnect) {
     this.ssb = ssb;
     this.serverKey = serverKey;
+    this.address = address;
     this.rpc = rpc;
     this.roomMetadata = roomMetadata;
     this.onConnect = onConnect;
@@ -25,11 +26,10 @@ class RoomClient {
   init() {
     debug('announcing to portal: %s', this.serverKey);
 
-    const roomAddr = this.rpc.stream.address;
     const roomName = this.roomMetadata && this.roomMetadata.name;
     if (roomName) {
-      this.ssb.conn.internalConnDB().update(roomAddr, {name: roomName});
-      this.ssb.conn.internalConnHub().update(roomAddr, {name: roomName});
+      this.ssb.conn.internalConnDB().update(this.address, {name: roomName});
+      this.ssb.conn.internalConnHub().update(this.address, {name: roomName});
     }
 
     pull(
@@ -40,7 +40,7 @@ class RoomClient {
 
         // Update onlineCount metadata for this room
         const onlineCount = endpoints.length;
-        this.ssb.conn.internalConnHub().update(roomAddr, {onlineCount});
+        this.ssb.conn.internalConnHub().update(this.address, {onlineCount});
 
         // Detect removed endpoints, unstage them
         for (const entry of this.ssb.conn.internalConnStaging().entries()) {
@@ -128,7 +128,7 @@ function init(ssb) {
           pull(
             ssb.conn.internalConnHub().listen(),
             pull.filter(({type}) => type === 'connected'),
-            pull.drain(({key, details}) => {
+            pull.drain(({address, key, details}) => {
               if (!key || !details || !details.rpc) return;
               if (rooms.has(key)) return;
               const rpc = details.rpc;
@@ -139,7 +139,10 @@ function init(ssb) {
               rpc.tunnel.isRoom((err, res) => {
                 if (err || !res) return;
                 debug('is connected to an actual ssb-room');
-                rooms.set(key, new RoomClient(ssb, key, rpc, res, onConnect));
+                rooms.set(
+                  key,
+                  new RoomClient(ssb, key, address, rpc, res, onConnect),
+                );
               });
             }),
           );
