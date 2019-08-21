@@ -12,7 +12,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV DEBUG="*"
 
 USER node
-RUN npm install -g ssb-room@0.1.2
+RUN npm install -g ssb-room@0.1.3
 
 EXPOSE 8008
 EXPOSE 8007
