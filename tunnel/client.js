@@ -28,8 +28,8 @@ class RoomClient {
 
     const roomName = this.roomMetadata && this.roomMetadata.name;
     if (roomName) {
-      this.ssb.conn.internalConnDB().update(this.address, {name: roomName});
-      this.ssb.conn.internalConnHub().update(this.address, {name: roomName});
+      this.ssb.conn.db().update(this.address, {name: roomName});
+      this.ssb.conn.hub().update(this.address, {name: roomName});
     }
 
     pull(
@@ -40,10 +40,10 @@ class RoomClient {
 
         // Update onlineCount metadata for this room
         const onlineCount = endpoints.length;
-        this.ssb.conn.internalConnHub().update(this.address, {onlineCount});
+        this.ssb.conn.hub().update(this.address, {onlineCount});
 
         // Detect removed endpoints, unstage them
-        for (const entry of this.ssb.conn.internalConnStaging().entries()) {
+        for (const entry of this.ssb.conn.staging().entries()) {
           const [addr, data] = entry;
           if (data.room === room && data.key && !endpoints.includes(data.key)) {
             debug('will conn.unstage("%s")', addr);
@@ -75,7 +75,7 @@ class RoomClient {
   }
 
   isAlreadyConnected(key) {
-    for (const [, data] of this.ssb.conn.internalConnHub().entries()) {
+    for (const [, data] of this.ssb.conn.hub().entries()) {
       if (data.key === key) return true;
     }
     return false;
@@ -85,7 +85,7 @@ class RoomClient {
     if (this.endpointsDrain && this.endpointsDrain.abort) {
       this.endpointsDrain.abort();
     }
-    for (const [addr, data] of this.ssb.conn.internalConnStaging().entries()) {
+    for (const [addr, data] of this.ssb.conn.staging().entries()) {
       if (data.room === this.serverKey) {
         this.ssb.conn.unstage(addr);
       }
@@ -115,7 +115,7 @@ function init(ssb) {
         server(onConnect) {
           // Once a room disconnects, teardown
           pull(
-            ssb.conn.internalConnHub().listen(),
+            ssb.conn.hub().listen(),
             pull.filter(({type}) => type === 'disconnected'),
             pull.filter(({key}) => !!key && rooms.has(key)),
             pull.drain(({key}) => {
@@ -126,7 +126,7 @@ function init(ssb) {
 
           // Once a peer connects, detect rooms, and setup room portals
           pull(
-            ssb.conn.internalConnHub().listen(),
+            ssb.conn.hub().listen(),
             pull.filter(({type}) => type === 'connected'),
             pull.drain(({address, key, details}) => {
               if (!key || !details || !details.rpc) return;

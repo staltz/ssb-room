@@ -27,7 +27,7 @@ function init(ssb) {
   });
 
   pull(
-    ssb.conn.internalConnHub().listen(),
+    ssb.conn.hub().listen(),
     pull.filter(
       ({type}) => type === 'connecting-failed' || type === 'disconnected',
     ),
