@@ -1,5 +1,7 @@
 # Manual setup
 
+Recommended operating system: Debian.
+
 ### Install Docker
 
 To run an SSB room you need to have a static public IP, ideally with a DNS record (i.e.`<hostname.yourdomain.tld>`).
@@ -49,6 +51,8 @@ chown -R 1000:1000 ~/ssb-room-data
 (If migrating from an old server, copy the previous `ssb-room-data` and paste it in the new one)
 
 #### Step 2. Configure the firewall to redirect the HTTP port
+
+This assumes your server's network interface is `eth0`. Run `ip addr` to make sure what the network interface code is, it could be something, such as `ens3`.
 
 ```shell
 sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8007
