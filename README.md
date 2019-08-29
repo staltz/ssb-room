@@ -46,6 +46,8 @@ The caveat is that you can only connect with accounts that are currently online 
 
 7. In your SSB app, when friends join the room, your apps will sync. Send the room's website link to other friends to invite them too.
 
+8. Announce the room's website publicly to the world by mentioning it anywhere on the web with the hashtag `#ssbroom`, or keep the link private to yourself and your friends.
+
 For other ️use cases and setups, [read the FAQ](./FAQ.md).
 
 ## Acknowledgements and donations
