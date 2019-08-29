@@ -20,7 +20,7 @@ The advantages are:
 
 The caveat is that you can only connect with accounts that are currently online in the same room. That said, you can still fetch the updates of an offline friend if another account online in the room also follows that offline friend.
 
-### ℹ️ [Read more in our FAQ](./FAQ.md)
+### ℹ️ [Read more in our FAQ](./FAQ.md) and [announcement blog post](https://www.manyver.se/blog/announcing-ssb-rooms)
 
 ## How to setup an SSB room
 
