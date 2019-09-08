@@ -15,6 +15,7 @@ However, one good practice to find (or announce) new rooms is to **share it on v
 - [#ssbroom on Tumblr](https://www.tumblr.com/search/%23ssbroom)
 - [#ssbroom on Pinterest](https://www.pinterest.com/search/pins/?q=%23candy)
 - [#ssbroom on GitHub](https://github.com/topics/ssbroom)
+- [ssb rooms on Google](https://www.google.com/search?q=intitle%3A"SSB+room"+intext%3A"accounts+currently+online")
 
 ## What are the privacy implications of using room servers?
 
