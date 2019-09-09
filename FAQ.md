@@ -16,6 +16,8 @@ However, one good practice to find (or announce) new rooms is to **share it on v
 - [#ssbroom on Pinterest](https://www.pinterest.com/search/pins/?q=%23candy)
 - [#ssbroom on GitHub](https://github.com/topics/ssbroom)
 - [ssb rooms on Google](https://www.google.com/search?q=intitle%3A"SSB+room"+intext%3A"accounts+currently+online")
+- [ssb rooms on DuckDuckGo](https://duckduckgo.com/?q=intitle%3A%22ssb+room%22+%22accounts+currently+online%22)
+- [ssb rooms on Bing](https://www.bing.com/search?q=intitle%3A"ssb+room"+"accounts+currently+online")
 
 ## What are the privacy implications of using room servers?
 
