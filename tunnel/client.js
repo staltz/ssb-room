@@ -90,7 +90,9 @@ class RoomClient {
         this.ssb.conn.unstage(addr);
       }
     }
-    this.rpc.close();
+    this.rpc.close(true, err => {
+      if (err) debug('error when closing connection with room: %s', err);
+    });
   }
 }
 
