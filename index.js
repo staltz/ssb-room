@@ -7,4 +7,5 @@ SecretStack({appKey: require('ssb-caps').shs})
   .use(require('./invite'))
   .use(require('./tunnel/server'))
   .use(require('./http-server'))
+  .use(require('./ssb-shims'))
   .call(null, require('./config'));
