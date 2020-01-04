@@ -40,7 +40,7 @@ The caveat is that you can only connect with accounts that are currently online 
 
 <img src="./screenshots/ready.png" width="480">
 
-6. **Copy the invite code and paste it** into your preferred SSB app. Apps that support room invite codes: Manyverse (version 0.1908.12 or higher), ~~Patchwork~~ ([work in progress](https://github.com/ssbc/patchwork/commits/rooms)).
+6. **Copy the invite code and paste it** into your preferred SSB app. Apps that support room invite codes: Manyverse (version 0.1908.12 or higher) and Patchwork.
 
 <img src="./screenshots/rooms-manyverse.png" width="480">
 
