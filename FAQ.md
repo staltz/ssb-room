@@ -40,6 +40,10 @@ A tunnel is an onion encrypted connection between two room clients, using [secre
 
 In case you want to have a custom domain address for that page, such as `room.scuttlebutt.nz` instead of a raw IP address, you need to (1) own a domain (there are many providers for this), and (2) setup DNS to add an `A` record pointing to the IP address you got from DigitalOcean.
 
+## Why is Digital Ocean the only cloud provider with an easy installer?
+
+Because it the only one I found that had an [easy installer](https://github.com/seven1m/do-install-button) available. I also considered Vultr because you can upload an ISO with the web app preconfigured, but this meant that I would have to figure out how to build an ISO for this web app. I considered Heroku too (because it has [easy installers](https://blog.heroku.com/heroku-button)), but Heroku is not a VPS provider, and doesn't allow us to have TCP sockets open all the time, which is a prerequisite SSB Room. If you want to add more easy installers for other cloud providers, be my guest and open a pull request. 
+
 ## How do I setup a room without using the Digital Ocean Installer?
 
 [Read here](./manual-setup.md) on how to setup a room manually, using Docker containers on your preferred server provider.
