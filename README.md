@@ -48,7 +48,7 @@ The caveat is that you can only connect with accounts that are currently online 
 
 8. Announce the room's website publicly to the world by mentioning it anywhere on the web with the hashtag `#ssbroom`, or keep the link private to yourself and your friends.
 
-For other ️use cases and setups, [read the FAQ](./FAQ.md).
+For other use cases and setups, [read the FAQ](./FAQ.md).
 
 ## Acknowledgements and donations
 
