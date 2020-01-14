@@ -3,7 +3,9 @@
   "version": "1.1.1",
   "description": "A server to find and connect to other SSB peers – a meeting place",
   "main": "index.js",
-  "bin": "bin.js",
+  "bin": {
+    "ssb-room": "bin.js"
+  },
   "author": "Andre Staltz <contact@staltz.com>",
   "license": "AGPL-3.0",
   "scripts": {
@@ -29,5 +31,17 @@
     "ssb-logging": "~1.0.0",
     "ssb-master": "~1.0.3",
     "ssb-ref": "~2.13.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/staltz/ssb-room.git"
+  },
+  "keywords": [
+    "ssb",
+    "ssbroom"
+  ],
+  "bugs": {
+    "url": "https://github.com/staltz/ssb-room/issues"
+  },
+  "homepage": "https://github.com/staltz/ssb-room#readme"
 }
