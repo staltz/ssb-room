@@ -1,5 +1,5 @@
 name: ssb-room
-image: debian-9-x64
+image: debian-10-x64
 min_size: 1gb
 config:
   #cloud-config
