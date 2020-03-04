@@ -8,6 +8,7 @@
   },
   "author": "Andre Staltz <contact@staltz.com>",
   "license": "AGPL-3.0",
+  "homepage": "https://github.com/staltz/ssb-room",
   "scripts": {
     "build": "docker build -t staltz/ssb-room:$(jq -r .version package.json) .",
     "start": "docker run -it --rm staltz/ssb-room",
