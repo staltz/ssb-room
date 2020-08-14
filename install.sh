@@ -124,6 +124,7 @@ server {
 
 	location / {
 		proxy_pass http://localhost:8007;
+		proxy_set_header Host $host;
 	}
 }
 EOF
