@@ -114,7 +114,7 @@ function init(ssb) {
           return msConfig.scope;
         },
 
-        server(onConnect) {
+        server(onConnect, startedCB) {
           // Once a room disconnects, teardown
           pull(
             ssb.conn.hub().listen(),
@@ -148,6 +148,8 @@ function init(ssb) {
               });
             }),
           );
+
+          startedCB();
 
           // close server
           return () => {
