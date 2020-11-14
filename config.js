@@ -1,9 +1,19 @@
+const crypto = require('crypto');
+const ssbKeys = require('ssb-keys');
 const Config = require('ssb-config/inject');
 const manifest = require('./manifest');
+
+let keys = null;
+if (typeof process.env.SEED === 'string' && process.env.SEED.length > 4) {
+  const hash = crypto.createHmac('sha256', process.env.SEED).digest('hex');
+  const seed = Buffer.from(hash, 'hex');
+  keys = ssbKeys.generate('ed25519', seed);
+}
 
 const config = Config('ssb', {
   manifest: manifest,
   logging: {level: 'info'},
+  keys,
   port: 8008,
   host: '0.0.0.0',
   replicate: {

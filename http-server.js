@@ -15,6 +15,29 @@ function fileExistsSync(filename) {
   return true;
 }
 
+function envVarsExist(env) {
+  return !!(env && env.SEED && env.NAME);
+}
+
+function configExistsSync(env, filename) {
+  if (envVarsExist(env)) return true;
+  else return fileExistsSync(filename);
+}
+
+function loadConfig(env, filename, cb) {
+  if (envVarsExist(env)) {
+    cb(null, {
+      name: env.NAME,
+      description: env.DESCRIPTION || '',
+    });
+  } else {
+    fs.readFile(filename, {encoding: 'utf-8'}, (err, rawCfg) => {
+      if (err) cb(err);
+      else cb(null, JSON.parse(rawCfg));
+    });
+  }
+}
+
 function startHTTPServer(ssb) {
   const app = express();
   app.use(express.static(__dirname + '/assets'));
@@ -26,15 +49,14 @@ function startHTTPServer(ssb) {
   const roomCfgFilePath = path.join(ssb.config.path, 'roomcfg');
 
   app.get('/', (req, res) => {
-    if (!fileExistsSync(roomCfgFilePath)) {
-      debug('There is no roomcfg file, ask for setup');
+    if (!configExistsSync(process.env, roomCfgFilePath)) {
+      debug('There is no room configuration, ask for setup');
       res.redirect('setup');
       return;
     }
 
-    fs.readFile(roomCfgFilePath, {encoding: 'utf-8'}, (err1, rawCfg) => {
+    loadConfig(process.env, roomCfgFilePath, (err1, roomConfig) => {
       if (err1) debug('ERROR loading roomcfg file');
-      const roomConfig = JSON.parse(rawCfg);
       let invite = ssb.invite.get();
       let host = parseAddress(parseMultiServerInvite(invite).remote).host;
       if (req.headers && req.headers.host) {
@@ -47,7 +69,7 @@ function startHTTPServer(ssb) {
       pull(
         ssb.tunnel.endpoints(),
         pull.take(1),
-        pull.drain(endpoints => {
+        pull.drain((endpoints) => {
           res.render('index', {
             host: host,
             name: roomConfig.name,
@@ -63,7 +85,7 @@ function startHTTPServer(ssb) {
   });
 
   app.get('/setup', (req, res) => {
-    if (fileExistsSync(roomCfgFilePath)) {
+    if (configExistsSync(process.env, roomCfgFilePath)) {
       res.redirect('/');
       return;
     }

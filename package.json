@@ -29,6 +29,7 @@
     "ssb-client": "~4.7.8",
     "ssb-config": "~3.3.2",
     "ssb-conn": ">=0.11.0",
+    "ssb-keys": "~8.0.0",
     "ssb-logging": "~1.0.0",
     "ssb-master": "~1.0.3",
     "ssb-ref": "~2.13.9"
