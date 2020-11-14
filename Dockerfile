@@ -12,7 +12,7 @@ ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 ENV DEBUG="*"
 
 USER node
-RUN npm install -g github:staltz/ssb-room#doapp
+RUN npm install -g github:staltz/ssb-room
 
 EXPOSE 8008
 EXPOSE 8007
