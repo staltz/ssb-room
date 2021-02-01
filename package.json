@@ -31,7 +31,8 @@
     "ssb-conn": ">=0.11.0",
     "ssb-logging": "~1.0.0",
     "ssb-master": "~1.0.3",
-    "ssb-ref": "~2.13.9"
+    "ssb-ref": "~2.13.9",
+    "ssb-ws": "^6.2.3"
   },
   "repository": {
     "type": "git",
