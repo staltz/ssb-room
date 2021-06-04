@@ -26,7 +26,7 @@ The caveat is that you can only connect with accounts that are currently online 
 
 1. Create an account on [DigitalOcean](https://www.digitalocean.com/) and setup a billing method
 
-2. Press this button [![Install on DigitalOcean](http://butt.nz/button.svg)](http://butt.nz/install?url=https://github.com/staltz/ssb-room) to create a server on DigitalOcean and setup SSB Room
+2. Press this button [![Install on DigitalOcean](http://legacy-installer.butt.nz/button.svg)](http://legacy-installer.butt.nz/install?url=https://github.com/staltz/ssb-room) to create a server on DigitalOcean and setup SSB Room
 
 3. Follow the instructions on that page until you see this big button, and press it. "Go to your new app!"
 
