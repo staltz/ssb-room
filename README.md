@@ -2,6 +2,8 @@
 
 **A server to find and connect to other SSB peers – a meeting place.**
 
+⚠️ **DEPRECATED. Please use the new iteration of SSB Rooms, [go-ssb-room](https://github.com/ssb-ngi-pointer/go-ssb-room/)** ⚠️
+
 - A [Secure Scuttlebutt (SSB)](https://www.scuttlebutt.nz) server for your community
 - Friends currently online can connect to each other, bridged by the room server
 - No developer skills required to set up your own room
