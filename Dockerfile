@@ -3,7 +3,8 @@ FROM node:10.16
 MAINTAINER Andre Staltz <contact@staltz.com>
 
 USER root
-ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini /tini
+ARG TINI_SUFFIX
+ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini${TINI_SUFFIX} /tini
 RUN chmod +x /tini
 RUN mkdir /home/node/.npm-global ; \
     chown -R node:node /home/node/
