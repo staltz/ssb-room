@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const i18n = require('i18n-express')
 const pull = require('pull-stream');
 const debug = require('debug')('ssb:room:http');
 const {parseAddress, parseMultiServerInvite} = require('ssb-ref');
@@ -22,7 +23,13 @@ function startHTTPServer(ssb) {
   app.set('port', 8007);
   app.set('views', __dirname + '/pages');
   app.set('view engine', 'ejs');
-
+  app.use(
+    i18n({
+      translationsPath: path.join(__dirname, 'translations'),
+      siteLangs: [process.env.PREFERRED_LANGUAGE || 'en', 'pt', 'es'],
+      textsVarName: 'translation'
+    })
+  )
   const roomCfgFilePath = path.join(ssb.config.path, 'roomcfg');
 
   app.get('/', (req, res) => {
