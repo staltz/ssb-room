@@ -14,6 +14,7 @@ ENV DEBUG="*"
 USER node
 RUN npm install -g ssb-room@1.3.0
 
+EXPOSE 8009
 EXPOSE 8008
 EXPOSE 8007
 
