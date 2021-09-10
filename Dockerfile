@@ -16,6 +16,7 @@ RUN npm install -g ssb-room@1.3.0
 
 EXPOSE 8008
 EXPOSE 8007
+VOLUME /home/node/.ssb
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=10 \
   CMD ssb-room check || exit 1
